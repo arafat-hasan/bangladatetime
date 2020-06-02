@@ -27,7 +27,7 @@ def _ans_of_days_before_year(year):
 class Testbengalidatetime(unittest.TestCase):
 
     def test_fromgregorian(self):
-        with open('data/2019-2020.csv', encoding="utf16") as file:
+        with open('tests/data/2019-2020.csv', encoding="utf16") as file:
             has_header = csv.Sniffer().has_header(file.read(1024))
             file.seek(0)
             reader = csv.reader(file)
