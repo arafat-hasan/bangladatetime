@@ -1,31 +1,34 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
+# def readme():
+# with open("README", 'r') as f:
+#     long_description = f.read()
 
-def readme():
-    # with open("README", 'r') as f:
-    #     long_description = f.read()
-
-    long_description = "bangla DateTime"
-    return long_description
-
+# long_description = "bangla DateTime"
+# return long_description
+readme = open('README.rst').read()
 
 setup(
+    # Metadata
     name='bangladatetime',
     version='0.1c1',
-    description='bangla Date Time',
-    license="MIT",
-    long_description=readme(),
-    keywords=
-    'bangla bangla-date bongabdo bangla digit bangla bangla-date bangladatetime',
     author='Arafat Hasan',
     author_email='opendoor.arafat@gmail.com',
     url="https://github.com/arafat-hasan/bangladatetime/",
-    packages=['bangladatetime'],
-    install_requires=['bar', 'greek'],
-    scripts=[
-        'scripts/cool',
-        'scripts/skype',
-    ])
+    description='Python package for Bengali (i.e Bangabdo) date and time',
+    long_description=readme,
+    license="MIT",
+    keywords="bangla bangla-date bongabdo bengali bengali-date "
+        "bengalidatetime bangladatetime",
+    packages=find_packages(exclude=('tests',)),
+    install_requires=[],
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: Bengali",
+    ],
+)
