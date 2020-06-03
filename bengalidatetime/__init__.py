@@ -28,21 +28,21 @@ _MAXORDINAL = 3652059  # date.max.toordinal()
 
 # -1 is a placeholder for indexing purposes.
 
-_GREGORIAN_DAY_AT_END_OF_BENGALI_MONTH = [
+_GREGORIAN_DAY_AT_END_OF_BANGLA_MONTH = [
     -1, 14, 13, 14, 13, 14, 14, 15, 15, 15, 16, 15, 15
 ]
 
-_BENGALI_DAY_AT_GREGORIAN_MONTH_START = [
+_BANGLA_DAY_AT_GREGORIAN_MONTH_START = [
     -1, 17, 18, 16, 18, 18, 18, 17, 17, 17, 16, 16, 16
 ]
 
-_BENGALI_DAY_AT_GREGORIAN_MONTH_END = [
+_BANGLA_DAY_AT_GREGORIAN_MONTH_END = [
     -1, 17, 15, 17, 17, 17, 16, 16, 16, 15, 15, 15, 16
 ]
 
 _DAYS_IN_GREGORIAN_MONTH = [-1, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-_DAYS_IN_BENGALI_MONTH = [-1, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 29, 30]
+_DAYS_IN_BANGLA_MONTH = [-1, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 29, 30]
 
 _MONTHNAMES = [
     None, "Bois", "Jyoi", "Asha", "Shra", "Bhad", "Ashs", "Kart", "Ogro",
@@ -52,7 +52,7 @@ _DAYNAMES = [None, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 _DAYS_BEFORE_MONTH = [-1]  # -1 is a placeholder for indexing purposes.
 dbm = 0
-for dim in _DAYS_IN_BENGALI_MONTH[1:]:
+for dim in _DAYS_IN_BANGLA_MONTH[1:]:
     _DAYS_BEFORE_MONTH.append(dbm)
     dbm += dim
 del dbm, dim
@@ -74,21 +74,21 @@ def _days_before_year(year):  # this funtion needs further checking
     "year -> number of days before January 1st of year."
     y = year - 1
     yy = y + 594
-    # yy is gregorian year respective to bengali year
+    # yy is gregorian year respective to bangla year
     # and 144 is number of gregorian leap years till 594
     return y * 365 + yy // 4 - yy // 100 + yy // 400 - 144
 
 
-def _gregorian_day_at_bengali_month_end(gregorian_year, gregorian_month):
+def _gregorian_day_at_bangla_month_end(gregorian_year, gregorian_month):
     """
     gregorian_year, gregorian_month -> number of days in that month in that
     year.
     """
     assert 1 <= gregorian_month <= 12, gregorian_month
-    return _GREGORIAN_DAY_AT_END_OF_BENGALI_MONTH[gregorian_month]
+    return _GREGORIAN_DAY_AT_END_OF_BANGLA_MONTH[gregorian_month]
 
 
-def _bengali_day_at_gregorian_month_end(gregorian_year, gregorian_month):
+def _bangla_day_at_gregorian_month_end(gregorian_year, gregorian_month):
     """
     gregorian_year, gregorian_month -> number of days in that month in that
     year.
@@ -96,10 +96,10 @@ def _bengali_day_at_gregorian_month_end(gregorian_year, gregorian_month):
     assert 1 <= gregorian_month <= 12, gregorian_month
     if gregorian_month == 2 and _is_leap(gregorian_year - 594):
         return 16
-    return _BENGALI_DAY_AT_GREGORIAN_MONTH_END[gregorian_month]
+    return _BANGLA_DAY_AT_GREGORIAN_MONTH_END[gregorian_month]
 
 
-def _bengali_day_at_gregorian_month_start(gregorian_year, gregorian_month):
+def _bangla_day_at_gregorian_month_start(gregorian_year, gregorian_month):
     """
     gregorian_year, gregorian_month -> number of days in that month in that
     year.
@@ -107,7 +107,7 @@ def _bengali_day_at_gregorian_month_start(gregorian_year, gregorian_month):
     assert 1 <= gregorian_month <= 12, gregorian_month
     if gregorian_month == 3 and _is_leap(gregorian_year - 594):
         return 17
-    return _BENGALI_DAY_AT_GREGORIAN_MONTH_START[gregorian_month]
+    return _BANGLA_DAY_AT_GREGORIAN_MONTH_START[gregorian_month]
 
 
 def _days_in_gregorian_month(gregorian_year, gregorian_month):
@@ -122,11 +122,11 @@ def _days_in_gregorian_month(gregorian_year, gregorian_month):
 
 
 def _days_in_month(year, month):
-    "year, month -> number of days in that bengali month in that bengali year."
+    "year, month -> number of days in that bangla month in that bangla year."
     assert 1 <= month <= 12, month
     if month == 11 and _is_leap(year):
         return 30
-    return _DAYS_IN_BENGALI_MONTH[month]
+    return _DAYS_IN_BANGLA_MONTH[month]
 
 
 def _days_before_month(year, month):
@@ -215,7 +215,7 @@ def _ord2ymd(n):
     preceding = _DAYS_BEFORE_MONTH[month] + (month > 2 and leapyear)
     if preceding > n:  # estimate is too large
         month -= 1
-        preceding -= _DAYS_IN_BENGALI_MONTH[month] + (month == 2 and leapyear)
+        preceding -= _DAYS_IN_BANGLA_MONTH[month] + (month == 2 and leapyear)
     n -= preceding
     assert 0 <= n < _days_in_month(year, month)
 
@@ -466,22 +466,22 @@ class date:
 
         bar = gregorian_month < 4 or \
             (gregorian_month == 4 and gregorian_day < 14)
-        bengali_year = gregorian_year - 593 - bar
+        bangla_year = gregorian_year - 593 - bar
 
-        foo = _gregorian_day_at_bengali_month_end(gregorian_year,
+        foo = _gregorian_day_at_bangla_month_end(gregorian_year,
                                                   gregorian_month)
         if gregorian_day <= foo:
-            bengali_month = (gregorian_month + 8) % 12 or 12
-            bengali_day = gregorian_day + (
-                _bengali_day_at_gregorian_month_start(gregorian_year,
+            bangla_month = (gregorian_month + 8) % 12 or 12
+            bangla_day = gregorian_day + (
+                _bangla_day_at_gregorian_month_start(gregorian_year,
                                                       gregorian_month) - 1)
         else:
-            bengali_month = (gregorian_month + 9) % 12 or 12
-            bengali_day = gregorian_day - (
+            bangla_month = (gregorian_month + 9) % 12 or 12
+            bangla_day = gregorian_day - (
                 _days_in_gregorian_month(gregorian_year, gregorian_month) -
-                _bengali_day_at_gregorian_month_end(gregorian_year,
+                _bangla_day_at_gregorian_month_end(gregorian_year,
                                                     gregorian_month))
-        return cls(bengali_year, bengali_month, bengali_day)
+        return cls(bangla_year, bangla_month, bangla_day)
 
     @classmethod
     def fromtimestamp(cls, t):
