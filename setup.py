@@ -16,6 +16,8 @@ setup(
     long_description=readme,
     long_description_content_type="text/markdown",
     license="MIT",
+    download_url=
+    'https://github.com/arafat-hasan/bangladatetime/archive/v0.0.1-alpha.tar.gz',
     keywords=[
         'bangla', 'bangla date', 'bongabdo', 'bengali', 'bengali date',
         'bengali datetime', 'bangla datetime'
