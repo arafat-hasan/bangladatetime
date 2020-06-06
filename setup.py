@@ -8,7 +8,7 @@ readme = open('README.md').read()
 setup(
     # Metadata
     name='bangladatetime',
-    version='0.0.1',
+    version='0.0.2',
     author='Arafat Hasan',
     author_email='opendoor.arafat@gmail.com',
     url="https://github.com/arafat-hasan/bangladatetime/",
