@@ -14,15 +14,21 @@ setup(
     url="https://github.com/arafat-hasan/bangladatetime/",
     description='Python package for Bengali (i.e Bangabdo) date and time',
     long_description=readme,
+    long_description_content_type="text/markdown",
     license="MIT",
-    keywords="bangla bangla-date bongabdo bengali bengali-date "
-        "bengalidatetime bangladatetime",
-    packages=find_packages(exclude=('tests',)),
+    keywords=[
+        'bangla', 'bangla date', 'bongabdo', 'bengali', 'bengali date',
+        'bengali datetime', 'bangla datetime'
+    ],
+    packages=find_packages(exclude=('tests', )),
     install_requires=[],
+    data_files=[("", ["LICENSE"])],
     classifiers=[
         "Development Status :: 3 - Alpha",
+        "Programming Language :: Python :: 3",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: Bengali",
+        "Operating System :: OS Independent",
     ],
 )

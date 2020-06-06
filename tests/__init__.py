@@ -11,11 +11,13 @@ BASEDIR = os.path.abspath(
 sys.path.insert(0, BASEDIR)
 
 import bangladatetime
+from bangladatetime.date import _is_leap
+from bangladatetime.date import _days_before_year, _parse_isoformat_date
 
 NUMBER_OF_LEAP_YEARS_BEFORE = [0]
 cnt = 0
 for i in range(1, 99999):
-    cnt = cnt + bangladatetime._is_leap(i)
+    cnt = cnt + _is_leap(i)
     NUMBER_OF_LEAP_YEARS_BEFORE.append(cnt)
 
 
@@ -25,7 +27,6 @@ def _ans_of_days_before_year(year):
 
 
 class Testbangladatetime(unittest.TestCase):
-
     def test_fromgregorian(self):
         with open('tests/data/2019-2020.csv', encoding="utf16") as file:
             has_header = csv.Sniffer().has_header(file.read(1024))
@@ -38,14 +39,14 @@ class Testbangladatetime(unittest.TestCase):
 
         for (gregorian, bangla) in data:
             gregorian_year, gregorian_month, gregorian_day = \
-                bangladatetime._parse_isoformat_date(gregorian)
+                _parse_isoformat_date(gregorian)
 
-            bangla_year, bangla_month, bangla_day = \
-                bangladatetime._parse_isoformat_date(bangla)
+            bangla_year, bangla_month, bangla_day = _parse_isoformat_date(
+                bangla)
 
             calc = bangladatetime.date.fromgregorian(gregorian_year,
-                                                      gregorian_month,
-                                                      gregorian_day)
+                                                     gregorian_month,
+                                                     gregorian_day)
 
             self.assertEqual((calc.year, calc.month, calc.day),
                              (bangla_year, bangla_month, bangla_day))
@@ -56,13 +57,13 @@ class Testbangladatetime(unittest.TestCase):
                                                                       True))
 
         for (year, ans) in test_year_list:
-            _flag = bangladatetime._is_leap(year)
+            _flag = _is_leap(year)
             self.assertEqual(_flag, ans, errorMsg + str(year))
 
     def test_days_before_year(self):
         errorMsg = "Test failed with bangla year: "
         for year in range(1, 9999):
-            ret = bangladatetime._days_before_year(year)
+            ret = _days_before_year(year)
             ans = (year - 1) * 365 + NUMBER_OF_LEAP_YEARS_BEFORE[year - 1]
             self.assertEqual(ans, ret, errorMsg + str(year))
 
