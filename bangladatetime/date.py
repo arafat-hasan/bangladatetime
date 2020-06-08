@@ -132,14 +132,13 @@ def _days_in_month(year, month):
 def _days_before_month(year, month):
     "year, month -> number of days in year preceding first day of month."
     assert 1 <= month <= 12, 'month must be in 1..12'
-    return _DAYS_BEFORE_MONTH[month] + (month > 2 and _is_leap(year))
+    return _DAYS_BEFORE_MONTH[month] + (month > 11 and _is_leap(year))
 
 
 def _ymd2ord(year, month, day):
     "year, month, day -> ordinal, considering 01-Jan-0001 as day 1."
     assert 1 <= month <= 12, 'month must be in 1..12'
     dim = _days_in_month(year, month)
-    print("from ymd2ord")
     assert 1 <= day <= dim, ('day must be in 1..%d' % dim)
     return (_days_before_year(year) + _days_before_month(year, month) + day)
 
@@ -159,6 +158,19 @@ assert _DI400Y == 4 * _DI100Y + 1
 # OTOH, a 100-year cycle has one fewer leap day than we'd get from
 # pasting together 25 4-year cycles.
 assert _DI100Y == 25 * _DI4Y - 1
+
+
+def ord2md(year, od):
+
+    bar = 365 + _is_leap(year)
+    if not 1 <= od <= bar:
+        raise ValueError('Ordinal date must be in 1..%d' % bar, od)
+    for month in range(12, 0, -1):
+        before = _days_before_month(year, month)
+        if od > before:
+            day = od - before
+            year, month, day = _check_date_fields(year, month, day)
+            return (month, day)
 
 
 def _ord2ymd(n):
@@ -184,9 +196,12 @@ def _ord2ymd(n):
     #     ...
     #     31 Dec  400         _DI400Y        _DI400Y -1
     #      1 Jan  401         _DI400Y +1     _DI400Y      400-year boundary
+    # nn = n
+    print(_DI400Y, _DI100Y, _DI4Y)
     n -= 1
     n400, n = divmod(n, _DI400Y)
-    year = n400 * 400 + 1  # ..., -399, 1, 401, ...
+    print("n400\t", n400, n)
+    year = n400 * 400  # ..., -399, 1, 401, ...
 
     # Now n is the (non-negative) offset, in days, from January 1 of year, to
     # the desired date.  Now compute how many 100-year cycles precede n.
@@ -194,34 +209,60 @@ def _ord2ymd(n):
     # 100-year cycles precede the desired day, which implies the desired
     # day is December 31 at the end of a 400-year cycle.
     n100, n = divmod(n, _DI100Y)
+    year += n100 * 100
+    print("n100\t", n100, n)
 
     # Now compute how many 4-year cycles precede it.
     n4, n = divmod(n, _DI4Y)
+    year += n4 * 4
+    print("n4\t", n4, n)
+
+    # if n1 == 4 or n100 == 4:
+    #     assert n == 0
+    #     print("#####################")
+    #     return year - 1, 12, 30
 
     # And now how many single years.  Again n1 can be 4, and again meaning
     # that the desired day is December 31 at the end of the 4-year cycle.
+    # n2, n = divmod(n, 731)
+    # print("n2\t", n2, n)
+    if n == 730:
+        return year+2, 12, 30
+    if n >= 731:
+        n -= 1
     n1, n = divmod(n, 365)
+    print("n1\t", n1, n)
+    # year += n100 * 100 + n4 * 4 + n1
+    # year = n2 * 2 + n1 + 1
+    year +=  n1 + 1
+    n += 1
 
-    year += n100 * 100 + n4 * 4 + n1
-    if n1 == 4 or n100 == 4:
-        assert n == 0
-        return year - 1, 12, 31
+    print(year, n)
+    month, day = ord2md(year, n)
+    return year, month, day
 
-    # Now the year is correct, and n is the offset from January 1.  We find
-    # the month via an estimate that's either exact or one too large.
-    leapyear = n1 == 3 and (n4 != 24 or n100 == 3)
-    assert leapyear == _is_leap(year)
-    month = (n + 50) >> 5
-    preceding = _DAYS_BEFORE_MONTH[month] + (month > 2 and leapyear)
-    if preceding > n:  # estimate is too large
-        month -= 1
-        preceding -= _DAYS_IN_BANGLA_MONTH[month] + (month == 2 and leapyear)
-    n -= preceding
-    assert 0 <= n < _days_in_month(year, month)
+    # # Now the year is correct, and n is the offset from January 1.  We find
+    # # the month via an estimate that's either exact or one too large.
+
+    # # year = year + 594
+    # # "year -> 1 if leap year, else 0."
+    # # return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+
+    # # leapyear = n1 == 3 and (n4 != 24 or n100 == 3)
+    # # print(year, leapyear, _is_leap(year))
+    # leapyear = _is_leap(year)
+    # # assert leapyear == _is_leap(year)
+    # month = (n + 51) >> 5
+    # print("month: ", month)
+    # preceding = _DAYS_BEFORE_MONTH[month] + (month > 11 and leapyear)
+    # if preceding > n:  # estimate is too large
+    #     month -= 1
+    #     preceding -= _DAYS_IN_BANGLA_MONTH[month] + (month == 11 and leapyear)
+    # n -= preceding
+    # assert 0 <= n < _days_in_month(year, month)
 
     # Now the year and month are correct, and n is the offset from the
     # start of that month:  we're done!
-    return year, month, n + 1
 
 
 def _build_struct_time(y, m, d, hh, mm, ss, dstflag):
@@ -427,8 +468,8 @@ class date:
         Arguments:
         year, month, day (required, base 1)
         """
-        if (month is None and isinstance(year, (bytes, str)) and
-                len(year) == 4 and 1 <= ord(year[2:3]) <= 12):
+        if (month is None and isinstance(year, (bytes, str)) and len(year) == 4
+                and 1 <= ord(year[2:3]) <= 12):
             # Pickle support
             if isinstance(year, str):
                 try:
@@ -693,11 +734,10 @@ class date:
         return (self.__class__, self._getstate())
 
 
-_date_class = date  # so functions w/ args named "date" can get at the class
+# _date_class = date  # so functions w/ args named "date" can get at the class
 
-date.min = date(1, 1, 1)
-date.max = date(9999, 12, 30)
-
+# date.min = date(1, 1, 1)
+# date.max = date(9999, 12, 30)
 
 # try:
 #     from _bangladatetime import *
