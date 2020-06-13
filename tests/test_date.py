@@ -14,7 +14,7 @@ from collections import Counter
 import bangladatetime.date
 from bangladatetime.date import _is_leap
 from bangladatetime.date import _days_before_year, _parse_isoformat_date
-from bangladatetime.date import _days_in_month, ord2md
+from bangladatetime.date import _days_in_month, _ord2md, _ymd2ord
 
 _DAYS_IN_BANGLA_MONTH = [-1, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 29, 30]
 
@@ -83,44 +83,46 @@ class Testbangladatetime(unittest.TestCase):
     def test_ord2md(self):
         non_leap_list = []
         for i in range(1, 366):
-            non_leap_list.append(ord2md(1427, i))
+            non_leap_list.append(_ord2md(1427, i))
 
         duplicates = Counter(non_leap_list)
         self.assertEqual(len(duplicates), 365, "Failed in a non leap year")
 
-
         leap_list = []
         for i in range(1, 367):
-            leap_list.append(ord2md(1426, i))
+            leap_list.append(_ord2md(1426, i))
 
         duplicates = Counter(leap_list)
         self.assertEqual(len(duplicates), 366, "Failed in a leap year")
-
-
 
     def test_fromordinal(self):
         """
         Test that it can sum a list of integers
         """
-        # errorMsg = "Test failed with bangla year: "
-        # ordinalday = 0
-        # for year in range(1, 12):
-        #     for month in range(1, 13):
-        #         days = _days_in_month(year, month)
-        #         for day in range(1, days + 1):
-        #             ordinalday = ordinalday + 1
-        #             test = bangladatetime.date.fromordinal(ordinalday)
+        errorMsg = "Test failed with bangla year: "
+        ordinaldate = 0
+        for year in range(1, 9999):
+            for month in range(1, 13):
+                days = _days_in_month(year, month)
+                for day in range(1, days + 1):
+                    ordinaldate = ordinaldate + 1
+                    test = bangladatetime.date.fromordinal(ordinaldate)
+                    self.assertEqual((test.year, test.month, test.day),
+                                     (year, month, day), errorMsg + str(year))
 
-        #             print(ordinalday, test.year, test.month, test.day)
-        #             print(ordinalday, year, month, day)
-        #             print("------------------------------------")
-        #             self.assertEqual((test.year, test.month, test.day),
-        #                              (year, month, day), errorMsg + str(year))
-
-        ordinalday = 36524
-        test = bangladatetime.date.fromordinal(ordinalday)
-
-        print(ordinalday, test.year, test.month, test.day)
+    def test_ymd2ord(self):
+        """
+        Test that it can sum a list of integers
+        """
+        errorMsg = "Test failed with bangla year: "
+        ordinaldate = 0
+        for year in range(1, 9999):
+            for month in range(1, 13):
+                days = _days_in_month(year, month)
+                for day in range(1, days + 1):
+                    ordinaldate = ordinaldate + 1
+                    test = _ymd2ord(year, month, day)
+                    self.assertEqual(ordinaldate, test, errorMsg + str(year))
 
 
 if __name__ == "__main__":
