@@ -49,7 +49,43 @@ _MONTHNAMES = [
     None, "Bois", "Jyoi", "Asha", "Shra", "Bhad", "Ashs", "Kart", "Ogro",
     "Pous", "Magh", "Falg", "Choi"
 ]
+
+_MONTHFULLNAMES = [
+    None, "Boishakh", "Jyoishtho", "Asharh", "Shrabon", "Bhadro", "Ashshin",
+    "Kartik", "Ogrohayon", "Poush", "Magh", "Falgun", "Choitro"
+]
+
+_MONTHNAMES_BN = [
+    None, "বৈশা", "জ্যৈষ্ঠ", "আষা", "শ্রাব", "ভাদ্র", "আশ্বি", "কার্তি",
+    "অগ্র", "পৌষ", "মাঘ", "ফাল্গু", "চৈত্র"
+]
+
+_MONTHFULLNAMES_BN = [
+    None, "বৈশাখ", "জ্যৈষ্ঠ", "আষাঢ়", "শ্রাবণ", "ভাদ্র", "আশ্বিন", "কার্তিক",
+    "অগ্রহায়ণ", "পৌষ", "মাঘ", "ফাল্গুন", "চৈত্র"
+]
+
+_DAYPUROK = [
+    None, "লা", "রা", "রা", "ঠা", "ই", "ই", "ই", "ই", "ই", "ই", "ই", "ই", "ই",
+    "ই", "ই", "ই", "ই", "ই", "শে", "শে", "শে", "শে", "শে", "শে", "শে", "শে",
+    "শে", "শে", "শে", "শে", "শে"
+]
+
+_DAYPUROKFULL = [
+    None, "পহেলা", "দোসরা", "তেসরা", "চৌঠা", "পাঁচই", "ছয়ই", "সাতই", "আটই",
+    "নয়ই", "দশই", "এগারোই", "বারোই", "তেরোই", "চোদ্দোই", "পনেরোই", "ষোলোই",
+    "সতেরোই", "আঠারোই", "উনিশে", "বিশে", "একুশে", "বাইশে", "তেইশে", "চব্বিশে",
+    "পঁচিশে", "ছাব্বিশে", "সাতাশে", "আটাশে", "উনত্রিশে", "ত্রিশে", "একত্রিশে"
+]
+
 _DAYNAMES = [None, "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+_DAYNAMES_BN = [None, "সোম", "মঙ্গ", "বুধ", "বৃহ", "শুক্র", "শনি", "রবি"]
+
+_DAYFULLNAMES_BN = [
+    None, "সোমবার", "মঙ্গলবার", "বুধবার", "বৃহস্পতিবার", "শুক্রবার", "শনিবার",
+    "রবিবার"
+]
 
 _DAYS_BEFORE_MONTH = [-1]  # -1 is a placeholder for indexing purposes.
 dbm = 0
@@ -390,6 +426,19 @@ def _isoweek1monday(year):
         week1monday += 7
     return week1monday
 
+def _eng2bnDigit(number):
+    number = number.replace('0', '০')
+    number = number.replace('1', '১')
+    number = number.replace('2', '২')
+    number = number.replace('3', '৩')
+    number = number.replace('4', '৪')
+    number = number.replace('5', '৫')
+    number = number.replace('6', '৬')
+    number = number.replace('7', '৭')
+    number = number.replace('8', '৮')
+    number = number.replace('9', '৯')
+    return number
+
 
 class date:
     """Concrete date type.
@@ -478,7 +527,6 @@ class date:
     def fromtimestamp(cls, t):
         "Construct a date from a POSIX timestamp (like time.time())."
         y, m, d, hh, mm, ss, weekday, jday, dst = _time.localtime(t)
-        print("called from date class fromtimestamp method")
         return cls.fromgregorian(y, m, d)
 
     @classmethod
@@ -553,6 +601,16 @@ class date:
 
     __str__ = isoformat
 
+    def banglalongdate(self):
+        """Return the date formatted according to ISO.
+        This is 'YYYY-MM-DD'.
+        """
+        year_bn = _eng2bnDigit(str(self._year))
+        month_bn = self.fullmonthname()
+        day_bn = _eng2bnDigit(str(self._day))
+        purok = _DAYPUROK[self.day]
+        return "%s%s %s, %s বঙ্গাব্দ" % (day_bn, purok, month_bn, year_bn)
+
     # Read-only field accessors
     @property
     def year(self):
@@ -568,6 +626,12 @@ class date:
     def day(self):
         """day (1-31)"""
         return self._day
+
+    def fullmonthname(self):
+        """day (1-31)"""
+        return _MONTHFULLNAMES_BN[self._month]
+
+
 
     # Standard conversions, __eq__, __le__, __lt__, __ge__, __gt__,
     # __hash__ (and helpers)
@@ -710,6 +774,5 @@ class date:
 #     # appropriate to maintain a single module level docstring and
 #     # remove the following line.
 #     from _datetime import __doc__
-
 
 # in this branch, i will implement bangla unicode conversion
