@@ -4,7 +4,7 @@ Python package for Bengali calendar (i.e Bangabdo).
 
 
 [![PyPI](https://img.shields.io/pypi/v/bangladatetime)](https://pypi.org/project/bangladatetime/)
-[![Build Status](https://travis-ci.org/arafat-hasan/bangladatetime.svg?branch=master)](https://travis-ci.org/arafat-hasan/bangladatetime)
+[![Build Status](https://travis-ci.com/arafat-hasan/bangladatetime.svg?branch=master)](https://travis-ci.com/arafat-hasan/bangladatetime)
 
 মোটাদাগে বর্তমানে তিনটি বাংলা বর্ষপঞ্জি চালু আছে। পূজা ইত্যকার দিন নির্ধারণে হিন্দু ধর্মালম্বীগণ কর্তৃক অনুসরণকৃত সনাতন বাংলা বর্ষপঞ্জি, ভারতের সরকারি বাংলা বর্ষপঞ্জি এবং বাংলাদেশের সরকারি বর্ষপঞ্জি। বাংলাদেশ ও ভারতের উভয় সরকারই একাধিকবার বর্ষপঞ্জি সংস্কার করেছে। বর্তমানে বাংলাদেশ সরকার যে বর্ষপঞ্জি অনুসরণ করছে, সেটা ২০১৯ সালে পুর্বতন বর্ষপঞ্জি সংস্কার করে চালু করা হয়। বর্তমান পাইথন প্যাকেজ বাংলাদেশে ২০১৯ সালে শামসুজ্জামান কমিটিকৃত সর্বশেষ সংশোধিত বর্ষপঞ্জি অনুসারে কাজ করে। এই পঞ্জিতে—
  - ১৪ই এপ্রিল পহেলা বৈশাখ।
